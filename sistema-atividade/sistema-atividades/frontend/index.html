@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Atividades</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="splash-screen">
+        <h1>Sistema de Atividades Educacionais</h1>
+        <p>Carregando...</p>
+    </div>
+    <script>
+        const token = localStorage.getItem('token');
+        const userType = localStorage.getItem('userType');
+        
+        if (token && userType) {
+            window.location.href = userType === 'professor' ? 'pages/professor.html' : 'pages/aluno.html';
+        } else {
+            window.location.href = 'pages/login.html';
+        }
+    </script>
+</body>
+</html>

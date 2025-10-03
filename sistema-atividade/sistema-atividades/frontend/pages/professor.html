@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área do Professor</title>
+    <link rel="stylesheet" href="../assets/css/professor.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <h2>📚 Sistema de Atividades</h2>
+        </div>
+        <div class="nav-user">
+            <span id="userName"></span>
+            <button onclick="logout()" class="btn-logout">Sair</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <aside class="sidebar">
+            <ul class="menu">
+                <li class="menu-item active" data-section="dashboard">
+                    <span>📊</span> Dashboard
+                </li>
+                <li class="menu-item" data-section="nova-atividade">
+                    <span>➕</span> Nova Atividade
+                </li>
+                <li class="menu-item" data-section="minhas-atividades">
+                    <span>📝</span> Minhas Atividades
+                </li>
+            </ul>
+        </aside>
+
+        <main class="content">
+            <!-- Dashboard -->
+            <section id="dashboard" class="section active">
+                <h1>Dashboard</h1>
+                <div class="stats">
+                    <div class="stat-card">
+                        <h3>Atividades Ativas</h3>
+                        <p class="stat-number" id="atividadesAtivas">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total de Atividades</h3>
+                        <p class="stat-number" id="totalAtividades">0</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Nova Atividade -->
+            <section id="nova-atividade" class="section">
+                <h1>Nova Atividade</h1>
+                
+                <div class="form-container">
+                    <div class="step-indicator">
+                        <div class="step active" data-step="1">
+                            <div class="step-number">1</div>
+                            <span>Upload do Arquivo</span>
+                        </div>
+                        <div class="step" data-step="2">
+                            <div class="step-number">2</div>
+                            <span>Configurações</span>
+                        </div>
+                        <div class="step" data-step="3">
+                            <div class="step-number">3</div>
+                            <span>Finalizar</span>
+                        </div>
+                    </div>
+
+                    <!-- Etapa 1: Upload -->
+                    <div class="form-step active" data-step="1">
+                        <h2>Upload do Documento</h2>
+                        <div class="upload-area" id="uploadArea">
+                            <input type="file" id="fileInput" accept=".docx,.doc" hidden>
+                            <div class="upload-icon">📄</div>
+                            <p>Arraste o arquivo .docx aqui ou clique para selecionar</p>
+                            <button type="button" class="btn-select-file">Selecionar Arquivo</button>
+                        </div>
+                        <div id="fileInfo" class="file-info" style="display: none;">
+                            <p>Arquivo: <span id="fileName"></span></p>
+                            <button type="button" class="btn-process">Processar Arquivo</button>
+                        </div>
+                        <div id="processingStatus"></div>
+                    </div>
+
+                    <!-- Etapa 2: Configurações -->
+                    <div class="form-step" data-step="2">
+                        <h2>Configurações da Atividade</h2>
+                        <form id="activityForm">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="curso">Curso</label>
+                                    <input type="text" id="curso" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="professorNome">Professor</label>
+                                    <input type="text" id="professorNome" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="modulo">Módulo</label>
+                                    <input type="text" id="modulo" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="agenda">Agenda</label>
+                                    <input type="text" id="agenda" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="titulo">Título</label>
+                                    <input type="text" id="titulo" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="dataInicio">Data/Hora de Início</label>
+                                    <input type="datetime-local" id="dataInicio" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="dataFim">Data/Hora de Término</label>
+                                    <input type="datetime-local" id="dataFim" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn-back" onclick="previousStep()">Voltar</button>
+                                <button type="button" class="btn-next" onclick="nextStep()">Avançar</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Etapa 3: Finalizar -->
+                    <div class="form-step" data-step="3">
+                        <h2>Revisão e Finalização</h2>
+                        <div id="activityPreview" class="preview-container"></div>
+                        <div class="form-actions">
+                            <button type="button" class="btn-back" onclick="previousStep()">Voltar</button>
+                            <button type="button" class="btn-submit" onclick="createActivity()">Criar Atividade</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Minhas Atividades -->
+            <section id="minhas-atividades" class="section">
+                <h1>Minhas Atividades</h1>
+                <div id="activitiesList" class="activities-list"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="../assets/js/professor.js"></script>
+</body>
+</html>

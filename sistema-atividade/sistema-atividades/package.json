@@ -1,0 +1,13 @@
+{
+  "name": "sistema-atividades",
+  "version": "1.0.0",
+  "description": "Sistema de gerenciamento de atividades educacionais",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js",
+    "setup": "node setup.js"
+  },
+  "keywords": ["educacao", "atividades", "gestao"],
+  "author": "Seu Nome",
+  "license": "MIT"
+}

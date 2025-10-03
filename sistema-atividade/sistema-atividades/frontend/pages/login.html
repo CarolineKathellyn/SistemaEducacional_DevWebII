@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema de Atividades</title>
+    <link rel="stylesheet" href="../assets/css/login.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="logo">
+                <h1>📚 Sistema de Atividades</h1>
+            </div>
+            
+            <form id="loginForm" class="login-form">
+                <h2>Entrar</h2>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required placeholder="seu@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" required placeholder="Sua senha">
+                </div>
+                
+                <div class="error-message" id="errorMessage"></div>
+                
+                <button type="submit" class="btn-login">Entrar</button>
+                
+                <div class="login-info">
+                    <p>👨‍🏫 Professor: professor@sistema.com | admin123</p>
+                    <p>👨‍🎓 Aluno: aluno@sistema.com | aluno123</p>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="../assets/js/login.js"></script>
+</body>
+</html>

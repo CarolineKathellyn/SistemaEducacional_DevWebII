@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área do Aluno</title>
+    <link rel="stylesheet" href="../assets/css/aluno.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <h2>📚 Sistema de Atividades</h2>
+        </div>
+        <div class="nav-user">
+            <span id="userName"></span>
+            <button onclick="logout()" class="btn-logout">Sair</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <main class="content">
+            <h1>Atividades Disponíveis</h1>
+            
+            <div class="filter-bar">
+                <input type="text" id="searchInput" placeholder="Buscar atividades..." class="search-input">
+                <select id="filterStatus" class="filter-select">
+                    <option value="all">Todas</option>
+                    <option value="open">Abertas</option>
+                    <option value="closed">Encerradas</option>
+                </select>
+            </div>
+
+            <div id="activitiesList" class="activities-grid"></div>
+        </main>
+    </div>
+
+    <!-- Modal de Atividade -->
+    <div id="activityModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="activityDetails"></div>
+        </div>
+    </div>
+
+    <script src="../assets/js/aluno.js"></script>
+</body>
+</html>
