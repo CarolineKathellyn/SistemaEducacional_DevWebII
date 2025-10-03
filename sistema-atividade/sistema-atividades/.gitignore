@@ -1,0 +1,10 @@
+node_modules/
+.env
+*.db
+uploads/*
+!uploads/.gitkeep
+generated/*
+!generated/.gitkeep
+.DS_Store
+*.log
+.claude/
