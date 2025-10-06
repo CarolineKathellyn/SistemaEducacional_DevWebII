@@ -106,6 +106,7 @@ exports.deleteActivity = (req, res) => {
 exports.submitActivity = (req, res) => {
   const { activity_id, texto_resposta } = req.body;
   const aluno_id = req.user.id;
+  const arquivo = req.file ? req.file.filename : null;
 
   // Verificar se a atividade ainda está aberta
   db.get('SELECT data_fim FROM activities WHERE id = ?', [activity_id], (err, activity) => {
@@ -123,10 +124,10 @@ exports.submitActivity = (req, res) => {
       return res.status(403).json({ error: 'Prazo de envio encerrado' });
     }
 
-    // Inserir submissão
+    // Inserir submissão com arquivo
     db.run(
-      'INSERT INTO submissions (activity_id, aluno_id, texto_resposta) VALUES (?, ?, ?)',
-      [activity_id, aluno_id, texto_resposta],
+      'INSERT INTO submissions (activity_id, aluno_id, texto_resposta, arquivo) VALUES (?, ?, ?, ?)',
+      [activity_id, aluno_id, texto_resposta, arquivo],
       function(err) {
         if (err) {
           return res.status(500).json({ error: 'Erro ao enviar atividade' });
@@ -138,4 +139,23 @@ exports.submitActivity = (req, res) => {
       }
     );
   });
+};
+
+exports.getSubmissions = (req, res) => {
+  const { id } = req.params; // activity_id
+
+  db.all(
+    `SELECT s.*, u.nome as aluno_nome, u.email as aluno_email
+     FROM submissions s
+     JOIN users u ON s.aluno_id = u.id
+     WHERE s.activity_id = ?
+     ORDER BY s.data_envio DESC`,
+    [id],
+    (err, rows) => {
+      if (err) {
+        return res.status(500).json({ error: 'Erro ao buscar submissões' });
+      }
+      res.json(rows);
+    }
+  );
 };

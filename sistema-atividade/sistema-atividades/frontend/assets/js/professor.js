@@ -141,8 +141,22 @@ async function processFile() {
                 document.getElementById('modulo').value = parsedData.metadata.modulo || '';
                 document.getElementById('agenda').value = parsedData.metadata.agenda || '';
                 document.getElementById('titulo').value = parsedData.metadata.titulo || '';
+
+                // Preencher prazos se existirem
+                if (parsedData.metadata.sections && parsedData.metadata.sections.prazos) {
+                    const prazos = parsedData.metadata.sections.prazos;
+                    if (prazos.inicio) {
+                        document.getElementById('dataInicio').value = convertToDatetimeLocal(prazos.inicio);
+                    }
+                    if (prazos.fim) {
+                        document.getElementById('dataFim').value = convertToDatetimeLocal(prazos.fim);
+                    }
+                }
+
+                // Exibir seções identificadas
+                displayExtractedSections(parsedData.metadata.sections);
             }
-            
+
             setTimeout(() => nextStep(), 1500);
         } else {
             statusDiv.innerHTML = `<p style="color: red;">Erro: ${result.error}</p>`;
@@ -216,15 +230,21 @@ function showPreview() {
 }
 
 async function createActivity() {
+    // Garantir que as datas sejam ISO strings completas
+    const dataInicioValue = document.getElementById('dataInicio').value;
+    const dataFimValue = document.getElementById('dataFim').value;
+
     const activityData = {
         curso: document.getElementById('curso').value,
         professor_nome: document.getElementById('professorNome').value,
         modulo: document.getElementById('modulo').value,
         agenda: document.getElementById('agenda').value,
         titulo: document.getElementById('titulo').value,
-        data_inicio: document.getElementById('dataInicio').value,
-        data_fim: document.getElementById('dataFim').value
+        data_inicio: new Date(dataInicioValue).toISOString(),
+        data_fim: new Date(dataFimValue).toISOString()
     };
+
+    console.log('Datas enviadas:', activityData.data_inicio, activityData.data_fim);
 
     try {
         // Gerar HTML primeiro
@@ -317,6 +337,7 @@ function displayActivities(activities) {
                 <p><strong>Fim:</strong> ${new Date(activity.data_fim).toLocaleString('pt-BR')}</p>
                 <p><strong>Status:</strong> <span style="color: ${isOpen ? 'green' : 'red'}">${isOpen ? 'Aberta' : 'Encerrada'}</span></p>
                 <div style="margin-top: 15px;">
+                    <button onclick="viewSubmissions(${activity.id})" class="btn-view">Ver Submissões</button>
                     <button onclick="editActivity(${activity.id})" class="btn-edit">Editar</button>
                     <button onclick="deleteActivity(${activity.id})" class="btn-delete">Excluir</button>
                     <a href="${activity.arquivo_html}" target="_blank" class="btn-view">Visualizar</a>
@@ -346,6 +367,96 @@ async function deleteActivity(id) {
         console.error('Erro:', error);
         alert('Erro ao excluir atividade');
     }
+}
+
+async function viewSubmissions(activityId) {
+    try {
+        const response = await fetch(`${API_URL}/activities/${activityId}/submissions`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        const submissions = await response.json();
+        showSubmissionsModal(submissions, activityId);
+    } catch (error) {
+        console.error('Erro ao carregar submissões:', error);
+        alert('Erro ao carregar submissões');
+    }
+}
+
+function showSubmissionsModal(submissions, activityId) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-submissions';
+    modal.innerHTML = `
+        <div class="modal-content-submissions">
+            <span class="close-submissions" onclick="this.parentElement.parentElement.remove()">&times;</span>
+            <h2>Submissões da Atividade</h2>
+            <div class="submissions-list">
+                ${submissions.length === 0 ? '<p>Nenhuma submissão ainda.</p>' :
+                    submissions.map(sub => `
+                        <div class="submission-card">
+                            <h3>${sub.aluno_nome}</h3>
+                            <p><strong>Email:</strong> ${sub.aluno_email}</p>
+                            <p><strong>Data de Envio:</strong> ${new Date(sub.data_envio).toLocaleString('pt-BR')}</p>
+                            ${sub.texto_resposta ? `<p><strong>Resposta:</strong><br>${sub.texto_resposta}</p>` : ''}
+                            ${sub.arquivo ? `
+                                <p><strong>Arquivo:</strong>
+                                    <a href="/uploads/${sub.arquivo}" target="_blank" download>
+                                        📎 ${sub.arquivo}
+                                    </a>
+                                </p>
+                            ` : ''}
+                        </div>
+                    `).join('')
+                }
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function convertToDatetimeLocal(dateString) {
+    // Converter formato DD/MM/YYYY HH:MM para YYYY-MM-DDTHH:MM
+    const parts = dateString.match(/(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2})/);
+    if (parts) {
+        const [, day, month, year, hour, minute] = parts;
+        return `${year}-${month}-${day}T${hour}:${minute}`;
+    }
+    return '';
+}
+
+function displayExtractedSections(sections) {
+    if (!sections) return;
+
+    const sectionsContainer = document.getElementById('processingStatus');
+    let html = '<div style="margin-top: 20px; padding: 15px; background: #f0f9ff; border-radius: 8px;">';
+    html += '<h4 style="color: #1e40af; margin-bottom: 10px;">📋 Seções Identificadas:</h4>';
+    html += '<ul style="list-style: none; padding: 0;">';
+
+    const sectionNames = {
+        apresentacao: 'Apresentação',
+        momentoReflexao: 'Momento de reflexão',
+        porqueAprender: 'Por que Aprender',
+        paraComeccar: 'Para começar o assunto',
+        mergulhando: 'Mergulhando no tema',
+        videoaulas: 'Videoaulas',
+        ampliandoHorizontes: 'Ampliando Horizontes',
+        resumindo: 'Resumindo o Estudo',
+        atividades: 'Atividades',
+        fichario: 'Fichário',
+        midiateca: 'Midiateca',
+        faleComTutor: 'Fale com o seu Tutor'
+    };
+
+    for (const [key, name] of Object.entries(sectionNames)) {
+        if (sections[key] && sections[key].trim()) {
+            html += `<li style="padding: 5px 0; color: #065f46;">✓ ${name}</li>`;
+        }
+    }
+
+    html += '</ul></div>';
+    sectionsContainer.innerHTML += html;
 }
 
 function logout() {

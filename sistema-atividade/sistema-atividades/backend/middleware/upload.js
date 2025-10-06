@@ -12,13 +12,13 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = ['.docx', '.doc'];
+  const allowedTypes = ['.docx', '.doc', '.pdf', '.csv'];
   const ext = path.extname(file.originalname).toLowerCase();
-  
+
   if (allowedTypes.includes(ext)) {
     cb(null, true);
   } else {
-    cb(new Error('Apenas arquivos .docx são permitidos'), false);
+    cb(new Error('Apenas arquivos .docx, .doc, .pdf e .csv são permitidos'), false);
   }
 };
 

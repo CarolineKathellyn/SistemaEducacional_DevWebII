@@ -337,3 +337,71 @@ body {
 .activity-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal de Submissões */
+.modal-submissions {
+    display: block;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content-submissions {
+    background-color: white;
+    margin: 3% auto;
+    padding: 30px;
+    width: 90%;
+    max-width: 1000px;
+    border-radius: 12px;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.close-submissions {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-submissions:hover {
+    color: #000;
+}
+
+.submissions-list {
+    margin-top: 20px;
+}
+
+.submission-card {
+    background: #f9fafb;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border-left: 4px solid #2563eb;
+}
+
+.submission-card h3 {
+    color: #1f2937;
+    margin-bottom: 10px;
+}
+
+.submission-card p {
+    margin: 8px 0;
+    color: #4b5563;
+    font-family: 'Calibri', Arial, sans-serif;
+}
+
+.submission-card a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.submission-card a:hover {
+    text-decoration: underline;

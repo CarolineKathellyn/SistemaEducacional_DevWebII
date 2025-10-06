@@ -49,8 +49,23 @@ function displayActivities(activities) {
         const now = new Date();
         const dataInicio = new Date(activity.data_inicio);
         const dataFim = new Date(activity.data_fim);
-        const isOpen = now >= dataInicio && now <= dataFim;
-        
+
+        let status, statusClass, statusText;
+
+        if (now < dataInicio) {
+            status = 'pending';
+            statusClass = 'pending';
+            statusText = '⏳ Não iniciada';
+        } else if (now >= dataInicio && now <= dataFim) {
+            status = 'open';
+            statusClass = 'open';
+            statusText = '✓ Aberta';
+        } else {
+            status = 'closed';
+            statusClass = 'closed';
+            statusText = '✕ Encerrada';
+        }
+
         return `
             <div class="activity-card" onclick="openActivity(${activity.id})">
                 <div class="activity-header">
@@ -70,8 +85,8 @@ function displayActivities(activities) {
                         <strong>${dataFim.toLocaleString('pt-BR')}</strong>
                     </div>
                 </div>
-                <span class="status-badge ${isOpen ? 'open' : 'closed'}">
-                    ${isOpen ? '✓ Aberta' : '✕ Encerrada'}
+                <span class="status-badge ${statusClass}">
+                    ${statusText}
                 </span>
             </div>
         `;
@@ -143,11 +158,18 @@ function showActivityModal(activity) {
             ${canSubmit ? `
                 <div style="margin-top: 30px;">
                     <h3>Enviar Resposta</h3>
-                    <textarea id="respostaTexto" rows="6" 
-                              style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: Calibri, Arial;">
+                    <textarea id="respostaTexto" rows="6"
+                              style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: Calibri, Arial; margin-bottom: 15px;">
                     </textarea>
-                    <button onclick="submitActivity(${activity.id})" 
-                            style="margin-top: 15px; padding: 12px 30px; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer;">
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Anexar Arquivo (opcional):</label>
+                        <input type="file" id="arquivoResposta" accept=".pdf,.docx,.doc,.csv"
+                               style="padding: 8px; border: 1px solid #ddd; border-radius: 6px; width: 100%;">
+                    </div>
+
+                    <button onclick="submitActivity(${activity.id})"
+                            style="margin-top: 15px; padding: 12px 30px; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer; font-family: Calibri, Arial;">
                         Enviar Atividade
                     </button>
                 </div>
@@ -177,23 +199,27 @@ function setupModal() {
 
 async function submitActivity(activityId) {
     const texto = document.getElementById('respostaTexto').value;
+    const arquivo = document.getElementById('arquivoResposta').files[0];
 
-    if (!texto.trim()) {
-        alert('Por favor, escreva sua resposta antes de enviar.');
+    if (!texto.trim() && !arquivo) {
+        alert('Por favor, escreva uma resposta ou anexe um arquivo.');
         return;
     }
 
     try {
+        const formData = new FormData();
+        formData.append('activity_id', activityId);
+        formData.append('texto_resposta', texto);
+        if (arquivo) {
+            formData.append('arquivo', arquivo);
+        }
+
         const response = await fetch(`${API_URL}/activities/submit`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             },
-            body: JSON.stringify({
-                activity_id: activityId,
-                texto_resposta: texto
-            })
+            body: formData
         });
 
         if (response.ok) {

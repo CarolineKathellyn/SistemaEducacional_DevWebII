@@ -115,6 +115,11 @@ body {
     color: #065f46;
 }
 
+.status-badge.pending {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
 .status-badge.closed {
     background-color: #fee2e2;
     color: #991b1b;

@@ -8,3 +8,5 @@ generated/*
 .DS_Store
 *.log
 .claude/
+generated/
+uploads/

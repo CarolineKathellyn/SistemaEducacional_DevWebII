@@ -4,13 +4,17 @@ const path = require('path');
 async function generateHTML(parsedData, activityInfo) {
   const { metadata, htmlContent, fullText, sections } = parsedData;
 
-  // Usar o HTML gerado pelo mammoth ou o texto completo
-  let content = htmlContent || '';
+  // Gerar conteúdo estruturado por seções se existirem
+  let content = '';
 
-  // Se não tiver htmlContent, usar fullText ou conteudoCompleto das sections
-  if (!content) {
-    const textToUse = fullText || (sections && sections.conteudoCompleto) || '';
-    content = formatTextToHTML(textToUse);
+  if (metadata.sections) {
+    content = generateStructuredContent(metadata.sections);
+  } else if (htmlContent) {
+    content = htmlContent;
+  } else if (fullText) {
+    content = formatTextToHTML(fullText);
+  } else if (sections && sections.conteudoCompleto) {
+    content = formatTextToHTML(sections.conteudoCompleto);
   }
 
   // Se ainda não tiver conteúdo, mostrar mensagem
@@ -259,6 +263,42 @@ function formatDate(dateString) {
     hour: '2-digit',
     minute: '2-digit'
   });
+}
+
+function generateStructuredContent(sections) {
+  let html = '';
+
+  const sectionConfig = [
+    { key: 'apresentacao', title: 'Apresentação', color: '#667eea' },
+    { key: 'momentoReflexao', title: 'Momento de reflexão', color: '#764ba2' },
+    { key: 'porqueAprender', title: 'Por que Aprender?', color: '#667eea' },
+    { key: 'paraComeccar', title: 'Para começar o assunto', color: '#764ba2' },
+    { key: 'mergulhando', title: 'Mergulhando no tema', color: '#667eea' },
+    { key: 'videoaulas', title: 'Videoaulas', color: '#764ba2' },
+    { key: 'ampliandoHorizontes', title: 'Ampliando Horizontes', color: '#667eea' },
+    { key: 'resumindo', title: 'Resumindo o Estudo', color: '#764ba2' },
+    { key: 'atividades', title: 'Atividades', color: '#667eea' },
+    { key: 'fichario', title: 'Fichário', color: '#764ba2' },
+    { key: 'midiateca', title: 'Midiateca', color: '#667eea' },
+    { key: 'faleComTutor', title: 'Fale com o seu Tutor', color: '#764ba2' }
+  ];
+
+  for (const section of sectionConfig) {
+    if (sections[section.key] && sections[section.key].trim()) {
+      html += `
+        <div class="section-block" style="margin-bottom: 30px; padding: 20px; background: #f9fafb; border-left: 4px solid ${section.color}; border-radius: 8px;">
+          <h2 style="color: ${section.color}; margin-bottom: 15px; font-family: Calibri, Arial, sans-serif; font-size: 18pt;">
+            ${section.title}
+          </h2>
+          <div style="font-family: Calibri, Arial, sans-serif; font-size: 12pt; line-height: 1.6; color: #1f2937;">
+            ${formatTextToHTML(sections[section.key])}
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  return html || '<p>Nenhuma seção identificada no documento.</p>';
 }
 
 module.exports = { generateHTML };

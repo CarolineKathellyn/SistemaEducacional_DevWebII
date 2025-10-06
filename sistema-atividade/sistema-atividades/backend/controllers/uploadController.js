@@ -15,8 +15,12 @@ exports.uploadDocument = async (req, res) => {
     const filePath = req.file.path;
     const fileId = req.file.filename;
 
+    console.log('Processando arquivo:', filePath);
+
     // Parse do documento
     const parsedData = await parseDocx(filePath);
+
+    console.log('Arquivo processado com sucesso');
 
     // Armazenar o parsedData completo no servidor
     processedFiles.set(fileId, parsedData);
@@ -33,7 +37,8 @@ exports.uploadDocument = async (req, res) => {
     });
   } catch (error) {
     console.error('Erro no upload:', error);
-    res.status(500).json({ error: 'Erro ao processar arquivo' });
+    console.error('Stack completo:', error.stack);
+    res.status(500).json({ error: 'Erro ao processar arquivo: ' + error.message });
   }
 };
 
