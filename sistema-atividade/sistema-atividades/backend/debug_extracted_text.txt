@@ -1,0 +1,77 @@
+LISTA 5 – PROBABILIDADE
+Estatística Aplicada - Profa. Dra. Nanci de Oliveira – FATEC – 4º ADS/4º DSM– 2025
+1
+LISTA 5– PROBABILIDADE
+1) Em um lote de 12 peças, 4 são defeituosos, sendo retirada uma peça
+aleatoriamente, calcule:
+a) A probabilidade dessa peça ser defeituosa.
+b) A probabilidade dessa peça não ser defeituosa.
+2) Qual a probabilidade de se obter soma 7 ou soma 11 numa jogada com dois
+dados?
+3) Considere uma pessoa em visita a Brasília. As probabilidades dessa pessoa
+visitar o edifício do Congresso, P(C), o Palácio da Alvorada, P(A), ou ambos P(C
+ A), são, respectivamente, 0,92; 0,33 e 0,29. Qual é a probabilidade dessa
+pessoa visitar o Congresso ou o Palácio da Alvorada, ou seja, P(C U A)?
+4) A probabilidade de uma pessoa que vai em um posto de gasolina pedir
+verificação do nível do óleo é P(O) = 0,28, a probabilidade de pedir verificação
+da pressão dos pneus é P(P) = 0,11 e a probabilidade de solicitar ambas as
+verificações é P(O  P) = 0,04. Qual é a probabilidade de que uma pessoa que
+vai em um posto de gasolina solicite verificação do nível de óleo ou da pressão
+dos pneus, ou seja, P(O U P)?
+5) Sejam três urnas. A primeira contém 3 bolas brancas, 4 pretas e 2 verdes. A
+segunda contém 5 brancas, 2 pretas e 1 verde. Na terceira, há 2 bolas brancas,
+3 pretas e 4 verdes. Uma bola é retirada ao acaso de cada urna. Qual a
+probabilidade de se retirar bola branca da primeira urna, bola preta da segunda
+urna e bola verde da terceira, respectivamente?
+6) Uma moeda é lançada 3 vezes. Qual a probabilidade de obter-se três caras,
+ou seja, obter cara na primeira, na segunda e na terceira vez?
+7) Num baralho simples de 52 cartas, tiram-se duas cartas. Qual a probabilidade
+que ambas sejam de espada?
+8) Dada a tabela abaixo, complete-a com o total de dados de cada linha e de
+cada coluna e encontre o total de dados. Se uma pessoa é escolhida ao acaso:
+a) Qual a probabilidade de ser homem, ou seja, P(H)?
+b) Qual a probabilidade de ser adulto, ou seja, P(A)?
+c) Qual a probabilidade de ser mulher, dado que a pessoa é menor de idade, ou
+seja, P(M/Me)?
+d) Sabendo-se que o elemento escolhido é adulto, qual a probabilidade de ser
+homem, ou seja, P(H/A)?
+
+LISTA 5 – PROBABILIDADE
+Estatística Aplicada - Profa. Dra. Nanci de Oliveira – FATEC – 4º ADS/4º DSM– 2025
+2
+Homens (H) Mulheres (M) TOTAL
+Menores (Me) 5 3
+Adultos (A) 5 2
+TOTAL
+9) A probabilidade de se chegar ao estacionamento antes das 8 horas é
+P(A)=0,40. Nessas condições, a probabilidade de encontrar lugar (estacionar) é
+0,60. Chegando depois das 8 horas, a probabilidade de encontrar lugar
+(estacionar) é 0,30.
+a) Qual a probabilidade de estacionar, ou seja, P(E)? Para resolver, use o
+diagrama de árvore e/ou o Teorema da Probabilidade Total.
+b) Qual a probabilidade, entre os carros que estão estacionados, dos que
+chegaram antes das 8 horas, ou seja, P(A/E)? Para resolver, use o diagrama de
+árvore e/ou o Teorema de Bayes.
+10) A probabilidade de um indivíduo da classe A comprar um carro é de ¾, da B
+é 1/5 e da C é de 1/20. As probabilidades de os indivíduos comprarem um carro
+da marca X são, 1/10, 3/5 e 3/10, dado que sejam de A, B e C, respectivamente.
+Certa loja vendeu um carro da marca X. Qual a probabilidade de que o indivíduo
+que a comprou seja da classe B, ou seja, P(B/X)? Para resolver, use o diagrama
+de árvore e/ou o Teorema de Bayes.
+RESPOSTAS – LISTA 5 – PROBABILIDADE
+1) a) 33,33 %
+b) 66,67 %
+2) 22,22%
+3) 96%
+4) 35%
+5) 3,7%
+6) 12,5%
+7) 5,88 %
+8) a) 66, 67%
+b) 46,67%
+c) 37,5%
+d) 71,43%
+9) a) P(E)= 42%
+b) P(A/E) = 57,14%
+10) P(B/X) = 57,14%
+

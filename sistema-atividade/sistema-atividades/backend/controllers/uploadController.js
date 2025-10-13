@@ -1,7 +1,6 @@
 const fs = require('fs').promises;
 const path = require('path');
 const { parseDocx } = require('../utils/docxParser');
-const { generateHTML } = require('../utils/htmlGenerator');
 
 // Armazenar arquivos processados temporariamente
 const processedFiles = new Map();
@@ -55,16 +54,32 @@ exports.generateActivityHTML = async (req, res) => {
       console.log('Usando dados do request (pode estar incompleto)');
     }
 
-    const html = await generateHTML(fullParsedData, activityInfo);
+    const { generateHTML, generateSectionPages } = require('../utils/htmlGenerator');
+
+    const timestamp = Date.now();
+
+    // Gerar HTML principal (menu de navegação)
+    const html = await generateHTML(fullParsedData, activityInfo, timestamp);
 
     console.log('HTML gerado, tamanho:', html.length);
 
-    const filename = `activity_${Date.now()}.html`;
+    const filename = `activity_${timestamp}.html`;
     const outputPath = path.join(__dirname, '../generated', filename);
 
     await fs.writeFile(outputPath, html);
 
     console.log('Arquivo salvo em:', outputPath);
+
+    // Gerar páginas individuais para cada seção
+    if (fullParsedData.metadata && fullParsedData.metadata.sections) {
+      const sectionFiles = await generateSectionPages(
+        fullParsedData.metadata.sections,
+        activityInfo,
+        timestamp,
+        path.join(__dirname, '../generated')
+      );
+      console.log('Arquivos de seção gerados:', sectionFiles.length);
+    }
 
     // Limpar arquivo processado da memória após gerar HTML
     if (parsedData.fileId) {
