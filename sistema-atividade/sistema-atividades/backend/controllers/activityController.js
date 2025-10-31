@@ -117,11 +117,14 @@ exports.submitActivity = (req, res) => {
       return res.status(404).json({ error: 'Atividade não encontrada' });
     }
 
-    const now = new Date();
-    const dataFim = new Date(activity.data_fim);
+    // Verificar prazo apenas se data_fim foi definida
+    if (activity.data_fim) {
+      const now = new Date();
+      const dataFim = new Date(activity.data_fim);
 
-    if (now > dataFim) {
-      return res.status(403).json({ error: 'Prazo de envio encerrado' });
+      if (now > dataFim) {
+        return res.status(403).json({ error: 'Prazo de envio encerrado' });
+      }
     }
 
     // Inserir submissão com arquivo

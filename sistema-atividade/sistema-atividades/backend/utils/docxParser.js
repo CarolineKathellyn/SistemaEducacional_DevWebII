@@ -2,6 +2,7 @@ const mammoth = require('mammoth');
 const fs = require('fs').promises;
 const path = require('path');
 const { pdf: pdfParse } = require('pdf-parse');
+const sizeOf = require('image-size');
 
 async function parseDocx(filePath) {
   try {
@@ -12,11 +13,98 @@ async function parseDocx(filePath) {
 
     // Processar conforme tipo de arquivo
     if (ext === '.docx' || ext === '.doc') {
-      // Processar Word
-      const htmlResult = await mammoth.convertToHtml({ path: filePath });
+      // Processar Word com opções avançadas para preservar formatação e imagens
+      const htmlResult = await mammoth.convertToHtml({
+        path: filePath,
+        convertImage: mammoth.images.imgElement(function(image) {
+          return image.read("base64").then(function(imageBuffer) {
+            const attributes = {
+              src: "data:" + image.contentType + ";base64," + imageBuffer
+            };
+
+            try {
+              console.log('\n=== IMAGEM PROCESSADA ===');
+
+              // IMPORTANTE: O Mammoth fornece as dimensões da imagem conforme ela aparece no Word
+              // através do objeto contentType. Vamos verificar se há informações de dimensão.
+
+              // Tentar obter dimensões do documento Word (EMUs - English Metric Units)
+              // 1 EMU = 1/914400 polegadas, 1 polegada = 96 pixels
+              // Então: pixels = EMUs / 9525
+
+              let finalWidth = 180; // Largura padrão menor (180px em vez de 250px)
+              let finalHeight = null;
+
+              // Se o Mammoth fornecer dimensões da imagem no documento, usar essas
+              if (image.width && image.height) {
+                // Converter EMUs para pixels
+                finalWidth = Math.round(image.width / 9525);
+                finalHeight = Math.round(image.height / 9525);
+                console.log(`Dimensões do documento Word: ${finalWidth}x${finalHeight}px`);
+              } else {
+                // Fallback: usar dimensões da imagem mas com limite menor
+                const buffer = Buffer.from(imageBuffer, 'base64');
+                const dimensions = sizeOf(buffer);
+                console.log('Dimensões originais da imagem:', dimensions);
+
+                let imgWidth = dimensions.width;
+                let imgHeight = dimensions.height;
+
+                // Redimensionar para largura máxima de 180px
+                const maxWidth = 180;
+                if (imgWidth > maxWidth) {
+                  const ratio = maxWidth / imgWidth;
+                  finalWidth = maxWidth;
+                  finalHeight = Math.round(imgHeight * ratio);
+                } else {
+                  finalWidth = imgWidth;
+                  finalHeight = imgHeight;
+                }
+                console.log(`Dimensões ajustadas: ${finalWidth}x${finalHeight}px`);
+              }
+
+              // Definir width e height para controlar o tamanho
+              attributes.width = String(finalWidth);
+              if (finalHeight) {
+                attributes.height = String(finalHeight);
+              }
+
+              // Adicionar classe para identificar imagens de conteúdo
+              attributes.class = 'content-image';
+
+              console.log('Atributos finais aplicados:', attributes);
+              console.log('=== FIM ===\n');
+
+            } catch (error) {
+              console.error('Erro ao processar imagem:', error.message);
+              // Se falhar, definir largura padrão menor
+              attributes.width = '180';
+              attributes.class = 'content-image';
+            }
+
+            return attributes;
+          });
+        }),
+        // Não usar styleMap customizado - deixar Mammoth usar padrão
+        // Mammoth já converte bold/italic automaticamente
+        ignoreEmptyParagraphs: false
+      });
       const rawResult = await mammoth.extractRawText({ path: filePath });
       text = rawResult.value;
       htmlContent = htmlResult.value;
+
+      console.log('HTML convertido, preservando dimensões originais das imagens');
+      console.log('Tags <strong> encontradas:', (htmlContent.match(/<strong>/g) || []).length);
+      console.log('Tags <b> encontradas:', (htmlContent.match(/<b>/g) || []).length);
+      console.log('Imagens encontradas:', (htmlContent.match(/<img/g) || []).length);
+
+      // Log das tags img para verificar se width/height estão presentes
+      const imgTags = htmlContent.match(/<img[^>]+>/g) || [];
+      console.log('\n=== TAGS IMG NO HTML GERADO ===');
+      imgTags.forEach((tag, index) => {
+        console.log(`Imagem ${index + 1}:`, tag.substring(0, 200));
+      });
+      console.log('=== FIM TAGS IMG ===\n');
 
       // Tentar extrair texto do HTML também (pode ter mais informação)
       const htmlText = htmlContent.replace(/<[^>]+>/g, '\n').replace(/\n+/g, '\n').trim();
@@ -51,7 +139,7 @@ async function parseDocx(filePath) {
     }
 
     // Extrair metadados
-    const metadata = extractMetadata(text);
+    const metadata = extractMetadata(text, htmlContent);
 
     // Retornar o conteúdo completo para ser exibido
     const sections = {
@@ -90,7 +178,7 @@ function convertCsvToHtml(csvText) {
   return html;
 }
 
-function extractMetadata(text) {
+function extractMetadata(text, htmlContent = '') {
   const metadata = {};
   const sections = {};
 
@@ -119,16 +207,17 @@ function extractMetadata(text) {
   console.log(text.substring(0, 2000));
   console.log('\n=== FIM DO PREVIEW ===\n');
 
-  // Salvar texto completo para debug (temporário) - não bloqueante
-  const debugPath = path.join(__dirname, '../debug_extracted_text.txt');
-  fs.writeFile(debugPath, text).then(() => {
-    console.log(`✓ Texto completo salvo em: ${debugPath}`);
+  // Salvar HTML completo para debug (temporário) - não bloqueante
+  const debugPath = path.join(__dirname, '../debug_extracted_html.txt');
+  const debugContent = `=== HTML COMPLETO ===\n\n${htmlContent}\n\n=== TEXTO EXTRAÍDO ===\n\n${text.substring(0, 3000)}`;
+  fs.writeFile(debugPath, debugContent).then(() => {
+    console.log(`✓ HTML e texto salvos em: ${debugPath}`);
   }).catch(err => {
     console.log('⚠️ Não foi possível salvar arquivo de debug:', err.message);
   });
 
-  // Extrair seções pela ordem estruturada do documento
-  const extractedSections = extractSectionsByOrder(text);
+  // Extrair seções pela ordem estruturada do documento (usando HTML quando disponível)
+  const extractedSections = extractSectionsByOrder(text, htmlContent);
   Object.assign(sections, extractedSections);
 
   sections.prazos = extractPrazos(text);
@@ -140,16 +229,17 @@ function extractMetadata(text) {
   return metadata;
 }
 
-function extractSectionsByOrder(text) {
+function extractSectionsByOrder(text, htmlContent = '') {
   const sections = {};
 
   console.log('\n=== INICIANDO EXTRAÇÃO INTELIGENTE DE SEÇÕES ===');
   console.log('Tamanho do texto:', text.length);
+  console.log('Tamanho do HTML:', htmlContent.length);
   console.log('Preview do texto:', text.substring(0, 500));
   console.log('===\n');
 
   // Primeiro tentar encontrar seções específicas conhecidas
-  const knownSections = extractKnownSections(text);
+  const knownSections = extractKnownSections(text, htmlContent);
   Object.assign(sections, knownSections);
 
   console.log(`\n=== TOTAL DE SEÇÕES CONHECIDAS ENCONTRADAS: ${Object.keys(sections).length} ===\n`);
@@ -161,155 +251,164 @@ function extractSectionsByOrder(text) {
 
   // Caso contrário, tentar detectar títulos automaticamente
   console.log('\n>>> Nenhuma seção padrão encontrada. Tentando detectar títulos automaticamente...\n');
-  const autoSections = extractSectionsAutomatically(text);
+  const autoSections = extractSectionsAutomatically(text, htmlContent);
   Object.assign(sections, autoSections);
 
   console.log(`\n=== TOTAL DE SEÇÕES AUTO-DETECTADAS: ${Object.keys(sections).length} ===\n`);
   return sections;
 }
 
-function extractKnownSections(text) {
+function extractKnownSections(text, htmlContent = '') {
   const sections = {};
 
-  console.log('\n>>> Usando estratégia de marcadores de conteúdo...');
+  console.log('\n>>> NOVA ESTRATÉGIA: Dividir por imagens de ícones (seção)...');
 
-  // Definir marcadores únicos de cada seção baseado no conteúdo real
-  const sectionMarkers = [
-    {
-      key: 'porqueAprender',
-      name: 'Por que Aprender?',
-      startMarkers: [
-        /Administrar\s+um\s+condom[ií]nio\s+envolve\s+muito\s+mais/i,
-        /🔍\s*Vamos\s+aprender\s+mais\s+sobre\s+isso/i
-      ],
-      priority: 2
-    },
-    {
-      key: 'paraComeccar',
-      name: 'Para Começar o Assunto',
-      startMarkers: [
-        /A\s+Relev[âa]ncia\s+dos\s+Tributos\s+na\s+Administra[çc][ãa]o\s+Condominial/i,
-        /Antes\s+de\s+mergulharmos\s+na\s+teoria\s+dos\s+tributos/i
-      ],
-      priority: 3
-    },
-    {
-      key: 'mergulhando',
-      name: 'Mergulhando no Tema',
-      startMarkers: [
-        /Vamos\s+mergulhar\s+no\s+tema\s+desta\s+agenda/i,
-        /ent[ãa]o\s+leia\s+as\s+aulas/i
-      ],
-      priority: 4
-    },
-    {
-      key: 'momentoReflexao',
-      name: 'Momento de Reflexão',
-      startMarkers: [
-        /tributo\s+[éeè]\s+o\s+pre[çc]o\s+que\s+pagamos\s+pela\s+civiliza[çc][ãa]o/i,
-        /oliver\s+wendell\s+holmes/i
-      ],
-      priority: 1
-    },
-    {
-      key: 'ampliandoHorizontes',
-      name: 'Ampliando Horizontes',
-      startMarkers: [
-        /Que\s+tal\s+aprofundarmos\s+os\s+temas\s+discutidos/i,
-        /ent[ãa]o\s+acesse\s+os\s+links\s+a\s+seguir/i
-      ],
-      priority: 5
-    },
-    {
-      key: 'resumindo',
-      name: 'Resumindo o Estudo',
-      startMarkers: [
-        /Nesta\s+agenda\s+voc[êe]\s+explorou\s+os\s+conceitos\s+essenciais/i,
-        /compreende\s+que\s+os\s+tributos\s+s[ãa]o\s+contribui[çc][õo]es\s+obrigat[óo]rias/i
-      ],
-      priority: 6
-    },
-    {
-      key: 'atividades',
-      name: 'Atividades',
-      startMarkers: [
-        /Situa[çc][ãa]o-problema/i,
-        /Condom[ií]nio\s+Residencial\s+Bela\s+Vista/i,
-        /Desafio:/i
-      ],
-      priority: 7
-    }
-  ];
+  const sourceHTML = htmlContent || '';
 
-  // Ordenar por prioridade
-  sectionMarkers.sort((a, b) => a.priority - b.priority);
+  console.log(`HTML disponível: ${htmlContent ? 'SIM (' + htmlContent.length + ' chars)' : 'NÃO'}`);
 
-  // Encontrar todas as seções
-  const foundSections = [];
+  if (!sourceHTML) {
+    console.log('Sem HTML disponível para processar');
+    return sections;
+  }
 
-  for (const marker of sectionMarkers) {
-    let found = false;
+  // NOVA LÓGICA: Os ícones de seção são imagens sozinhas em parágrafos
+  // Procurar por: <p><img.../></p> (parágrafo contendo APENAS imagem, sem texto)
+  // Essas imagens contêm os nomes das seções como gráficos (não como texto HTML)
 
-    for (const startPattern of marker.startMarkers) {
-      const match = startPattern.exec(text);
+  // Primeiro, remover a tabela inicial (metadados)
+  const tableEnd = sourceHTML.indexOf('</table>');
+  const contentStart = tableEnd > 0 ? tableEnd + 8 : 0;
+  const content = sourceHTML.substring(contentStart);
 
-      if (match) {
-        foundSections.push({
-          key: marker.key,
-          name: marker.name,
-          index: match.index,
-          matchLength: match[0].length
-        });
+  console.log(`Iniciando busca após tabela (posição ${contentStart})`);
 
-        console.log(`\n>>> ENCONTRADO: "${marker.name}" na posição ${match.index}`);
-        console.log(`    Marcador usado: "${match[0].substring(0, 50)}..."`);
-        found = true;
-        break;
-      }
+  // ABORDAGEM FINAL: Como os nomes das seções estão DENTRO das imagens (gráficos),
+  // vamos simplesmente dividir o documento em PEDAÇOS GRANDES de conteúdo.
+  // Procurar por imagens que tenham bastante conteúdo depois delas (indicando início de seção)
+
+  const iconPattern = /<p[^>]*>\s*<img[^>]+>\s*<\/p>/gi;
+  const potentialIcons = [];
+  let match;
+
+  while ((match = iconPattern.exec(content)) !== null) {
+    potentialIcons.push({
+      html: match[0],
+      index: match.index
+    });
+  }
+
+  console.log(`\n>>> Encontrados ${potentialIcons.length} imagens isoladas`);
+
+  // Filtrar apenas imagens que são ícones de seção
+  // Critérios:
+  // 1. Tem bastante conteúdo depois (> 300 chars) OU tem imagem grande (> 200px)
+  // 2. Não é a primeira imagem muito próxima do início (logo)
+  const sectionIcons = [];
+  for (let i = 0; i < potentialIcons.length; i++) {
+    const current = potentialIcons[i];
+    const next = potentialIcons[i + 1];
+
+    const nextPos = next ? next.index : content.length;
+    const contentAfter = content.substring(current.index + current.html.length, nextPos);
+    const contentBefore = content.substring(0, current.index);
+
+    // Para a primeira imagem, verificar se tem conteúdo significativo antes
+    // Se for logo no início (< 200 chars antes), provavelmente é logo/decoração
+    if (i === 0 && contentBefore.trim().length < 200) {
+      console.log(`  ✗ Primeira imagem em posição ${current.index} - muito próxima do início (${contentBefore.length} chars antes) - provavelmente é logo`);
+      continue;
     }
 
-    if (!found) {
-      console.log(`\n>>> NÃO ENCONTRADO: "${marker.name}"`);
+    // Extrair largura da imagem (se disponível)
+    const widthMatch = current.html.match(/width="(\d+)"/);
+    const imageWidth = widthMatch ? parseInt(widthMatch[1]) : 0;
+
+    // Considerar como ícone de seção se:
+    // - Tem conteúdo significativo depois (> 300 chars), OU
+    // - É uma imagem grande (> 200px de largura) indicando ser um ícone de seção
+    const hasContentAfter = contentAfter.trim().length > 300;
+    const isLargeImage = imageWidth > 200;
+
+    if (hasContentAfter || isLargeImage) {
+      sectionIcons.push(current);
+      console.log(`  ✓ Ícone em posição ${current.index} - conteúdo: ${contentAfter.length} chars, largura: ${imageWidth}px`);
+    } else {
+      console.log(`  ✗ Imagem em posição ${current.index} - conteúdo: ${contentAfter.length} chars, largura: ${imageWidth}px (muito pequeno)`);
     }
   }
 
-  // Ordenar por posição no texto
-  const sectionMatches = foundSections.sort((a, b) => a.index - b.index);
+  console.log(`\n>>> ${sectionIcons.length} ícones de seção identificados`);
 
-  console.log(`\n>>> Ordem das seções encontradas:`);
-  sectionMatches.forEach((match, idx) => {
-    console.log(`    ${idx + 1}. ${match.name} (posição ${match.index})`);
-  });
+  if (sectionIcons.length === 0) {
+    console.log('Nenhuma seção encontrada - retornando conteúdo completo');
+    sections['conteudo_completo'] = content.trim();
+    return sections;
+  }
 
-  // Extrair conteúdo de cada seção até o próximo título
-  for (let i = 0; i < sectionMatches.length; i++) {
-    const current = sectionMatches[i];
-    const next = sectionMatches[i + 1];
+  // Nomes padrão das seções (na ordem esperada)
+  const standardSectionNames = [
+    'MOMENTO DE REFLEXÃO',
+    'POR QUE APRENDER?',
+    'PARA COMEÇAR O ASSUNTO...',
+    'MERGULHANDO NO TEMA...',
+    'AMPLIANDO HORIZONTES',
+    'RESUMINDO O ESTUDO',
+    'ATIVIDADE'
+  ];
 
-    const startIndex = current.index + current.matchLength;
-    const endIndex = next ? next.index : text.length;
+  // Extrair seções
+  for (let i = 0; i < sectionIcons.length; i++) {
+    const current = sectionIcons[i];
+    const next = sectionIcons[i + 1];
 
-    // Extrair o conteúdo da seção
-    let content = text.substring(startIndex, endIndex).trim();
+    // CORREÇÃO: Iniciar APÓS a imagem do ícone (não incluir o ícone)
+    const sectionStart = current.index + current.html.length;
+    const sectionEnd = next ? next.index : content.length;
 
-    // Remover "Fonte: autor" do final se existir
-    content = content.replace(/\s*Fonte:\s*autor\s*$/gi, '').trim();
+    let sectionHTML = content.substring(sectionStart, sectionEnd).trim();
 
-    console.log(`\n>>> Extraindo seção: ${current.name}`);
-    console.log(`    Início: ${startIndex}, Fim: ${endIndex}`);
-    console.log(`    Tamanho do conteúdo: ${content.length} caracteres`);
-    console.log(`    Preview: ${content.substring(0, 150)}...`);
+    // Limpar textos de marcação
+    sectionHTML = sectionHTML.replace(/<p>\s*Fonte:\s*(autor|Autor|Freepik)\s*<\/p>/gi, '');
+    sectionHTML = sectionHTML.replace(/<p>\s*Suporte:\s*Linkar\s+a\s+imagem[^<]*<\/p>/gi, '');
 
-    if (content.length > 20) {
-      sections[current.key] = content;
-      console.log(`✓ ${current.name}: Adicionado com sucesso!`);
+    // Usar nome padrão se disponível, senão tentar extrair do HTML
+    let sectionTitle;
+    let safeKey;
+
+    if (i < standardSectionNames.length) {
+      // Usar nome padrão
+      sectionTitle = standardSectionNames[i];
+      safeKey = sectionTitle.toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '_')
+        .substring(0, 40);
     } else {
-      console.log(`✗ ${current.name}: Conteúdo muito curto (${content.length} chars), ignorado.`);
+      // Tentar extrair título do HTML (para seções adicionais)
+      const titleMatch = sectionHTML.match(/<strong[^>]*>([^<]{5,50})<\/strong>/i);
+      sectionTitle = titleMatch ? titleMatch[1].trim() : `Seção ${i + 1}`;
+      safeKey = titleMatch
+        ? sectionTitle.toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9]+/g, '_')
+            .substring(0, 40)
+        : `secao_${i + 1}`;
     }
+
+    const imageCount = (sectionHTML.match(/<img /g) || []).length;
+
+    console.log(`\nSeção ${i + 1}: "${sectionTitle}"`);
+    console.log(`  Key: ${safeKey}`);
+    console.log(`  Tamanho: ${sectionHTML.length} chars`);
+    console.log(`  Imagens: ${imageCount}`);
+    console.log(`  Preview: ${sectionHTML.substring(0, 150).replace(/<[^>]+>/g, ' ')}...`);
+
+    sections[safeKey] = sectionHTML;
+    console.log(`  ✓ Adicionada`);
   }
 
   console.log(`\n>>> Total de seções extraídas: ${Object.keys(sections).length}`);
-  console.log(`>>> Chaves das seções: ${Object.keys(sections).join(', ')}`);
+  console.log(`>>> Chaves: ${Object.keys(sections).join(', ')}`);
 
   return sections;
 }
@@ -385,11 +484,12 @@ function findEndOfIndex(text) {
   return Math.floor(text.length * 0.1);
 }
 
-function extractSectionsAutomatically(text) {
+function extractSectionsAutomatically(text, htmlContent = '') {
   const sections = {};
 
   // Primeiro tentar dividir por "Fonte: autor" que separa as seções
   const parts = text.split(/(?:Fonte:\s*autor|FONTE:\s*AUTOR)/i);
+  const htmlParts = htmlContent ? htmlContent.split(/(?:Fonte:\s*autor|FONTE:\s*AUTOR)/i) : [];
 
   console.log(`>>> Divisão por "Fonte: autor": ${parts.length} partes encontradas`);
 
@@ -489,15 +589,19 @@ function extractSectionsAutomatically(text) {
       }
 
       if (bestMatch.identifier) {
-        sections[bestMatch.identifier.key] = part;
+        // Usar HTML se disponível para preservar formatação
+        const htmlPart = htmlParts[i] || part;
+        sections[bestMatch.identifier.key] = htmlPart;
         console.log(`  ✓ Identificado como: ${bestMatch.identifier.title}`);
+        console.log(`  Usando: ${htmlParts[i] ? 'HTML (com formatação)' : 'Texto puro'}`);
         identified = true;
       }
 
       // Se não identificou, criar seção genérica
       if (!identified) {
         const key = `secao_${i}`;
-        sections[key] = part;
+        const htmlPart = htmlParts[i] || part;
+        sections[key] = htmlPart;
         console.log(`  → Seção genérica criada: secao_${i}`);
       }
     }

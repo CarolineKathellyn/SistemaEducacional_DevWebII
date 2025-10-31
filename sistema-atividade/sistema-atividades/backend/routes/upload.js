@@ -19,4 +19,11 @@ router.post(
   uploadController.generateActivityHTML
 );
 
+router.post(
+  '/save-section',
+  authenticateToken,
+  requireProfessor,
+  uploadController.saveEditedSection
+);
+
 module.exports = router;

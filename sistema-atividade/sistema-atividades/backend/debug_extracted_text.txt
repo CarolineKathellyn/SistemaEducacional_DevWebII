@@ -1,77 +1,165 @@
-LISTA 5 – PROBABILIDADE
-Estatística Aplicada - Profa. Dra. Nanci de Oliveira – FATEC – 4º ADS/4º DSM– 2025
-1
-LISTA 5– PROBABILIDADE
-1) Em um lote de 12 peças, 4 são defeituosos, sendo retirada uma peça
-aleatoriamente, calcule:
-a) A probabilidade dessa peça ser defeituosa.
-b) A probabilidade dessa peça não ser defeituosa.
-2) Qual a probabilidade de se obter soma 7 ou soma 11 numa jogada com dois
-dados?
-3) Considere uma pessoa em visita a Brasília. As probabilidades dessa pessoa
-visitar o edifício do Congresso, P(C), o Palácio da Alvorada, P(A), ou ambos P(C
- A), são, respectivamente, 0,92; 0,33 e 0,29. Qual é a probabilidade dessa
-pessoa visitar o Congresso ou o Palácio da Alvorada, ou seja, P(C U A)?
-4) A probabilidade de uma pessoa que vai em um posto de gasolina pedir
-verificação do nível do óleo é P(O) = 0,28, a probabilidade de pedir verificação
-da pressão dos pneus é P(P) = 0,11 e a probabilidade de solicitar ambas as
-verificações é P(O  P) = 0,04. Qual é a probabilidade de que uma pessoa que
-vai em um posto de gasolina solicite verificação do nível de óleo ou da pressão
-dos pneus, ou seja, P(O U P)?
-5) Sejam três urnas. A primeira contém 3 bolas brancas, 4 pretas e 2 verdes. A
-segunda contém 5 brancas, 2 pretas e 1 verde. Na terceira, há 2 bolas brancas,
-3 pretas e 4 verdes. Uma bola é retirada ao acaso de cada urna. Qual a
-probabilidade de se retirar bola branca da primeira urna, bola preta da segunda
-urna e bola verde da terceira, respectivamente?
-6) Uma moeda é lançada 3 vezes. Qual a probabilidade de obter-se três caras,
-ou seja, obter cara na primeira, na segunda e na terceira vez?
-7) Num baralho simples de 52 cartas, tiram-se duas cartas. Qual a probabilidade
-que ambas sejam de espada?
-8) Dada a tabela abaixo, complete-a com o total de dados de cada linha e de
-cada coluna e encontre o total de dados. Se uma pessoa é escolhida ao acaso:
-a) Qual a probabilidade de ser homem, ou seja, P(H)?
-b) Qual a probabilidade de ser adulto, ou seja, P(A)?
-c) Qual a probabilidade de ser mulher, dado que a pessoa é menor de idade, ou
-seja, P(M/Me)?
-d) Sabendo-se que o elemento escolhido é adulto, qual a probabilidade de ser
-homem, ou seja, P(H/A)?
-
-LISTA 5 – PROBABILIDADE
-Estatística Aplicada - Profa. Dra. Nanci de Oliveira – FATEC – 4º ADS/4º DSM– 2025
-2
-Homens (H) Mulheres (M) TOTAL
-Menores (Me) 5 3
-Adultos (A) 5 2
-TOTAL
-9) A probabilidade de se chegar ao estacionamento antes das 8 horas é
-P(A)=0,40. Nessas condições, a probabilidade de encontrar lugar (estacionar) é
-0,60. Chegando depois das 8 horas, a probabilidade de encontrar lugar
-(estacionar) é 0,30.
-a) Qual a probabilidade de estacionar, ou seja, P(E)? Para resolver, use o
-diagrama de árvore e/ou o Teorema da Probabilidade Total.
-b) Qual a probabilidade, entre os carros que estão estacionados, dos que
-chegaram antes das 8 horas, ou seja, P(A/E)? Para resolver, use o diagrama de
-árvore e/ou o Teorema de Bayes.
-10) A probabilidade de um indivíduo da classe A comprar um carro é de ¾, da B
-é 1/5 e da C é de 1/20. As probabilidades de os indivíduos comprarem um carro
-da marca X são, 1/10, 3/5 e 3/10, dado que sejam de A, B e C, respectivamente.
-Certa loja vendeu um carro da marca X. Qual a probabilidade de que o indivíduo
-que a comprou seja da classe B, ou seja, P(B/X)? Para resolver, use o diagrama
-de árvore e/ou o Teorema de Bayes.
-RESPOSTAS – LISTA 5 – PROBABILIDADE
-1) a) 33,33 %
-b) 66,67 %
-2) 22,22%
-3) 96%
-4) 35%
-5) 3,7%
-6) 12,5%
-7) 5,88 %
-8) a) 66, 67%
-b) 46,67%
-c) 37,5%
-d) 71,43%
-9) a) P(E)= 42%
-b) P(A/E) = 57,14%
-10) P(B/X) = 57,14%
-
+Curso: Técnico em Condomínio
+Componente curricular: Gestão Financeira, Contábil e Patrimonial
+Módulo: II
+Número da Agenda: 07
+Professor Responsável: Ricardo José da Conceição
+Título da agenda: Tributação e Gestão Fiscal em Condomínios
+Bases tecnológicas trabalhadas (segundo o plano de curso): 
+Noções de tributos 
+Conceito:
+CF - Constituição da República Federativa do Brasil;
+CTN – Código Tributário Nacional. 
+Características; 
+Obrigações tributárias: 
+hipótese de incidência;
+fato gerador;
+competência tributária.
+Espécies tributárias
+Impostos: 
+Federais: 
+IRPF – Imposto de Renda;
+IRPJ – Imposto de Renda Pessoa Jurídica;
+IPI – Imposto sobre Produtos Industrializados;
+IOF – Imposto sobre Operações Financeiras;
+ITR - Imposto Territorial Rural;
+II – Imposto sobre Importação;
+IE – Imposto sobre exportação;
+IGF – Imposto sobre Grandes Fortunas;
+Residual;
+Extraordinário.
+Estaduais:
+ICMS – Imposto sobre Mercadorias e Serviços;
+ITCMD – Imposto sobre Transmissão Causa Mortis e Doações;
+IPVA – Imposto sobre Veículo Automotor.
+Municipais:
+ISS – Imposto Sobre Serviços;
+Retenção em notas fiscais;
+Geração de guias para pagamento;
+IPTU – Imposto Predial Territorial Urbano;
+ITBI – Imposto sobre Transmissão de Bens Inter Vivos.
+Taxas; 
+Contribuições de melhoria; 
+Contribuições especiais: 
+PIS – Programa de Integração Social;
+COFINS – Contribuição para o Financiamento da Seguridade Social;
+CSLL – Contribuição Social sobre o Lucro Líquido.
+Empréstimos Compulsórios. 
+A Relevância dos Tributos na Administração Condominial
+Antes de mergulharmos na teoria dos tributos e suas implicações na administração de um condomínio, vamos considerar algumas situações que exemplificam como esses conceitos são aplicados no dia a dia.
+Caso 1: O Desafio da Retenção de Impostos em Serviços
+Imagine que o condomínio onde você trabalha como administrador decide contratar uma empresa para fazer a manutenção da piscina. A empresa envia a nota fiscal, e você percebe que há uma retenção de impostos, como ISS (Imposto Sobre Serviços), que precisa ser feita antes do pagamento. Como administrador, você deve garantir que essa retenção seja feita corretamente, de acordo com as exigências fiscais, para evitar problemas legais no futuro.
+Fonte: Autor
+Reflexão:
+ Como o conhecimento sobre 
+impostos municipais
+ e suas obrigações (como a retenção na fonte) poderia evitar penalidades para o condomínio e garantir uma administração mais eficiente?
+Caso 2: A Incidência do IPTU em Áreas Comuns
+Em um condomínio residencial, os moradores recebem a cobrança anual do IPTU (Imposto Predial Territorial Urbano). Porém, um dos moradores questiona a divisão do imposto entre as unidades e as áreas comuns, sugerindo que a cobrança está incorreta. O síndico, sem conhecimento adequado sobre as regras do IPTU e a hipótese de incidência, encontra dificuldades em esclarecer e resolver o problema.
+Fonte: autor
+Reflexão:
+ Como a compreensão das 
+características dos tributos
+ e a 
+competência tributária
+ poderia ajudar a esclarecer a situação e garantir que o condomínio esteja em conformidade com a legislação?
+Caso 3: Planejamento Tributário para a Reforma do Condomínio
+O condomínio decidiu realizar uma reforma estrutural nas áreas comuns, que envolve um investimento significativo. Durante a fase de planejamento, a administradora do condomínio sugere analisar a incidência de tributos como IPI (Imposto sobre Produtos Industrializados) e ISS sobre os serviços contratados. O objetivo é fazer um planejamento tributário que minimize os custos e otimize o uso dos recursos disponíveis.
+Fonte: autor
+Reflexão:
+ Como o conhecimento sobre 
+espécies tributárias
+ (federais, estaduais e municipais) pode influenciar o planejamento financeiro de uma grande obra no condomínio, garantindo o uso eficiente dos recursos?
+Esses casos ilustram a importância de conhecer as regras tributárias aplicáveis a um condomínio. Tributos como IPTU, ISS, e outros, podem ter um impacto significativo na gestão financeira e na tomada de decisões administrativas. Compreender essas questões é essencial para garantir que o condomínio funcione de maneira eficiente, em conformidade com a lei, e com transparência para todos os moradores.
+Vamos mergulhar no tema desta agenda?
+📌 Então leia as aulas 
+01 a 12
+ da apostila "
+Noções de Direito Tributário", 
+disponível na plataforma virtual de aprendizagem.
+ 
+Essas seções abrangem os conceitos fundamentais sobre 
+noções de tributos
+, 
+obrigações tributárias
+, 
+espécies tributárias
+ e 
+contribuições especiais
+, garantindo que você compreenda os tópicos estudados nesta agenda.
+Suporte: Linkar a imagem com o documento correspondente
+Que tal aprofundarmos os temas discutidos nesta aula? 
+Então acesse os links a seguir para saber mais sobre os assuntos tratados nesta agenda:
+📌 🔹 
+Vídeo – Direito Tributário: Conceitos e Princípios
+🔗 
+https://www.youtube.com/watch?v=rAejCeevabk
+➡️ Apresenta os conceitos básicos do direito tributário, explicando os principais tributos e sua aplicação no Brasil.
+📌 🔹 
+Vídeo – Introdução ao Direito Tributário
+🔗 
+https://www.youtube.com/watch?v=EM_gruOGRn4&amp;list=PLKX_9q7UOdsf91HCP1aiY2edmbgVUNtq4
+➡️ Série de vídeos explicativos sobre os fundamentos do direito tributário, incluindo a Constituição Federal e o Código Tributário Nacional.
+📌 🔹 
+Artigo – O que é Direito Tributário?
+🔗 
+https://www.projuris.com.br/blog/direito-tributario/
+➡️ Explica os fundamentos do direito tributário, sua importância e as principais leis que o regulamentam no Brasil.
+📌 🔹 
+Código Tributário Nacional – Lei 5.172/66
+🔗 
+https://www.jusbrasil.com.br/legislacao/91647/codigo-tributario-nacional-lei-5172-66
+➡️ Texto integral do Código Tributário Nacional, documento essencial para compreender as normas que regem os tributos no país.
+📌 🔹 
+Artigo – Princípios Constitucionais Tributários
+🔗 
+https://www.jusbrasil.com.br/artigos/principios-constitucionais-tributarios/119525741
+➡️ Explica os princípios constitucionais que orientam a tributação no Brasil, garantindo segurança jurídica e justiça fiscal.
+📌 🔹 
+Artigo – Conceituação e Classificação dos Tributos
+🔗 
+https://www.jusbrasil.com.br/artigos/tributo-conceituacao-e-classificacoes/1169803536
+➡️ Detalha os diferentes tipos de tributos existentes no Brasil e suas aplicações práticas.
+📌 🔹 
+Artigo – 14 Obrigações Fiscais e Tributárias dos Condomínios no Brasil
+🔗 
+https://habitacional.com.br/obrigacoes-fiscais-e-tributarias-dos-condominios/
+➡️ Explica as obrigações tributárias dos condomínios, abordando tributos como PIS, COFINS e CSLL, além de orientações sobre retenções fiscais.
+📌 🔹 
+Artigo – Tributação dos Condomínios
+🔗 
+https://www.jusbrasil.com.br/artigos/tributacao-dos-condominios/714162647
+➡️ Detalha a incidência de tributos sobre condomínios, esclarecendo as principais dúvidas sobre o tema.
+📌 🔹 
+Artigo – O que é Empréstimo Compulsório?
+🔗 
+https://www.jusbrasil.com.br/artigos/o-que-e-emprestimo-compulsorio/431715006
+➡️ Explica o conceito de empréstimo compulsório, suas condições de aplicação e a devolução dos valores arrecadados.
+📌 🔹 
+Vídeo – Empréstimo Compulsório | Prof. Gabriel Quintanilha
+🔗 
+https://www.youtube.com/watch?v=c-svd1k8MJY
+➡️ Aula explicativa sobre empréstimos compulsórios, abordando os casos históricos e suas implicações jurídicas.
+Nesta agenda você explorou os conceitos essenciais sobre tributos e sua importância na administração condominial. Compreende que os tributos são contribuições obrigatórias instituídas por lei, divididas em impostos, taxas e contribuições de melhoria , cada um com sua finalidade específica.
+Fonte: Freepik
+Aprenda sobre a base legal tributária , incluindo a Constituição Federal (CF) e o Código Tributário Nacional (CTN) , que definem como competências dos entes federativos na arrecadação de tributos. Também estudamos os conceitos de hipóteses de incidência e fato gerador , que determinam quando e como um tributo deve ser cobrado.
+Além disso, diferenciou os impostos federais, estaduais e municipais e analisou a relevância das taxas e contribuições especiais na gestão condominial. Entendeu ainda o conceito de empréstimo compulsório e as suas condições de aplicação.
+Esse conhecimento permitirá uma gestão condominial mais eficiente e alinhada às exigências legais, garantindo transparência e equilíbrio financeiro.
+Até a próxima agenda! 🚀
+Situação-problema:
+O Condomínio Residencial Bela Vista está passando por dificuldades financeiras devido a inconsistências no pagamento de suas obrigações tributárias. Durante uma auditoria, foi identificado que alguns impostos e taxas condominiais não estavam sendo recolhidos corretamente, resultando em multas e juros que impactaram o orçamento do condomínio.
+A administradora responsável justificou que a equipe desconhecia detalhes sobre hipótese de incidência, fato gerador e competência tributária, o que levou a erros no planejamento financeiro. Agora, o síndico e sua equipe precisam resolver esse problema e garantir que todas as obrigações tributárias sejam cumpridas corretamente para evitar futuros prejuízos.
+📌 Desafio:
+Você foi contratado como consultor tributário para auxiliar o condomínio na regularização da situação. Sua missão é analisar o caso e apresentar um plano estratégico para garantir que o Residencial Bela Vista esteja em conformidade com suas obrigações tributárias.
+🎯 Tarefa:
+Com base no problema apresentado, elabore um documento explicativo contendo:
+1️. Explicação dos conceitos de hipótese de incidência, fato gerador e competência tributária, relacionando-os com o contexto condominial.
+2️. Identificação das principais obrigações tributárias do condomínio e quais órgãos são responsáveis pela arrecadação.
+3️. Análise dos desafios enfrentados pelo síndico e equipe na gestão dessas obrigações, destacando riscos e impactos financeiros.
+4️. Proposta de soluções práticas para melhorar a gestão tributária, como cronogramas de pagamento, estratégias de prevenção de inadimplências e medidas de controle financeiro.
+📄 Produto final:
+✔ Relatório explicativo detalhado contendo a análise do caso e as soluções propostas.
+📢 Dica:
+Utilize exemplos práticos para ilustrar a aplicação dos conceitos e facilite a compreensão do problema.
+📌 Dúvidas?
+Entre em contato com seu professor mediador pelo CorreioTec ou pelo fórum de apoio.
+Agora é sua vez! Desenvolva sua análise e ajude o Residencial Bela Vista a regularizar sua gestão tributária!
